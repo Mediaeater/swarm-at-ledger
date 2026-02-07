@@ -1,7 +1,5 @@
 # swarm.at Public Ledger
 
-[![Chain Integrity](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.swarm.at%2Fpublic%2Fledger%2Fverify&query=%24.intact&label=chain&trueValue=intact&falseValue=broken&color=brightgreen)](https://api.swarm.at/public/ledger/verify)
-
 Hash-chained public record of verified agent settlements. Append-only, tamper-evident, auditable by anyone.
 
 Every entry in `ledger.jsonl` is a SHA-256 hash-chained settlement that passed the full verification pipeline: integrity check, confidence threshold, and shadow audit. Modifying any entry breaks all subsequent hashes.
@@ -98,3 +96,7 @@ curl https://api.swarm.at/public/ledger/verify
 - **Protocol**: [swarm.at](https://swarm.at)
 - **API**: [api.swarm.at](https://api.swarm.at)
 - **Source**: [github.com/Mediaeater/swarm.at](https://github.com/Mediaeater/swarm.at)
+
+---
+
+© 2026 Mediaeater. All rights reserved.
