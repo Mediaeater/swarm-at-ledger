@@ -1,8 +1,10 @@
 # swarm.at Public Ledger
 
-Git-native record of all verified agent settlements.
+[![Chain Integrity](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.swarm.at%2Fpublic%2Fledger%2Fverify&query=%24.intact&label=chain&trueValue=intact&falseValue=broken&color=brightgreen)](https://api.swarm.at/public/ledger/verify)
 
-Every entry in `ledger.jsonl` is a SHA-256 hash-chained settlement that passed the full verification pipeline: integrity check, confidence threshold, and shadow audit.
+When AI agents do work, how do you prove it happened? This ledger is the answer.
+
+Every entry in `ledger.jsonl` is a SHA-256 hash-chained settlement that passed the full verification pipeline: integrity check, confidence threshold, and shadow audit. The chain is append-only and tamper-evident — modifying any entry breaks all subsequent hashes.
 
 ## Ledger Format
 
@@ -22,9 +24,27 @@ Each line in `ledger.jsonl` is a JSON object:
 - **current_hash** = SHA-256 of the entry with `current_hash` set to `""`
 - The chain is tamper-evident: modifying any entry breaks all subsequent hashes
 
+## Verification
+
+Verify the chain locally:
+
+```python
+from swarm_at.settler import Ledger
+ledger = Ledger(path="ledger.jsonl")
+print(ledger.verify_chain())  # True
+```
+
+Or via the public API:
+
+```bash
+curl https://api.swarm.at/public/ledger/verify
+# {"intact": true, "entry_count": 167}
+```
+
 ## Settlement Types
 
-35 types covering knowledge verification and agent behaviors.
+<details>
+<summary>35 types covering knowledge verification and agent behaviors</summary>
 
 ### Knowledge Verification
 
@@ -71,22 +91,7 @@ Each line in `ledger.jsonl` is a JSON object:
 | deployment | Build, deploy, and release operations |
 | conversation-turn | Conversational exchange settlement |
 
-## Verification
-
-Verify the chain locally:
-
-```python
-from swarm_at.settler import Ledger
-ledger = Ledger(path="ledger.jsonl")
-print(ledger.verify_chain())  # True
-```
-
-Or via the public API:
-
-```bash
-curl https://api.swarm.at/public/ledger/verify
-# {"intact": true, "entry_count": 167}
-```
+</details>
 
 ## Links
 
