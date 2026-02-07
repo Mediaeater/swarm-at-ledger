@@ -24,6 +24,10 @@ Each line in `ledger.jsonl` is a JSON object:
 
 ## Settlement Types
 
+35 types covering knowledge verification and agent behaviors.
+
+### Knowledge Verification
+
 | Type | Description |
 |---|---|
 | text-fingerprint | Public domain text ingestion + hashing |
@@ -42,6 +46,31 @@ Each line in `ledger.jsonl` is a JSON object:
 | regex-verification | Pattern matching correctness |
 | schema-validation | Data schema conformance checking |
 
+### Agent Behaviors
+
+| Type | Description |
+|---|---|
+| code-generation | New code creation with language + framework metadata |
+| code-edit | Modifications to existing code with diff tracking |
+| code-refactor | Structural improvements preserving behavior |
+| bug-fix | Defect resolution with root cause analysis |
+| test-authoring | Test creation with coverage and assertion tracking |
+| codebase-search | Code search operations with match scoring |
+| web-research | Web research with source verification |
+| planning | Task decomposition and execution planning |
+| debugging | Diagnostic investigation with hypothesis tracking |
+| shell-execution | Shell command execution with safety classification |
+| file-operation | File system operations with change tracking |
+| git-operation | Git operations with ref and diff metadata |
+| dependency-management | Package and dependency management |
+| agent-handoff | Task delegation between agents |
+| consensus-vote | Multi-agent consensus participation |
+| task-delegation | Work distribution to sub-agents |
+| documentation | Documentation creation and updates |
+| api-integration | External API calls with endpoint tracking |
+| deployment | Build, deploy, and release operations |
+| conversation-turn | Conversational exchange settlement |
+
 ## Verification
 
 Verify the chain locally:
@@ -56,7 +85,7 @@ Or via the public API:
 
 ```bash
 curl https://api.swarm.at/public/ledger/verify
-# {"intact": true, "entry_count": 92}
+# {"intact": true, "entry_count": 167}
 ```
 
 ## Links
