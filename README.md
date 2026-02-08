@@ -22,9 +22,34 @@ Each line in `ledger.jsonl` is a JSON object:
 - **current_hash** = SHA-256 of the entry with `current_hash` set to `""`
 - The chain is tamper-evident: modifying any entry breaks all subsequent hashes
 
+## Canonical Hash Algorithm
+
+To verify any entry:
+
+1. Parse the JSON line into a dict
+2. Set `current_hash` to `""` (empty string)
+3. Serialize with `json.dumps(entry, sort_keys=True).encode()` (UTF-8)
+4. Compute `hashlib.sha256(serialized).hexdigest()`
+5. Compare against the stored `current_hash`
+
+The genesis (first entry's `parent_hash`) is always `"0" * 64` (64 zero characters).
+
+## Data Provenance
+
+Entries in this ledger are **synthetic seed data** generated from public domain sources (Project Gutenberg texts, scientific constants, geographic facts). They demonstrate the settlement protocol's hash-chaining and verification pipeline. They are not records of real agent interactions.
+
 ## Verification
 
-Verify the chain locally:
+Three ways to verify the chain:
+
+**Standalone** (zero dependencies, Python 3.8+):
+
+```bash
+python verify.py
+# OK: 280 entries, chain intact
+```
+
+**SDK**:
 
 ```python
 from swarm_at.settler import Ledger
@@ -32,11 +57,11 @@ ledger = Ledger(path="ledger.jsonl")
 print(ledger.verify_chain())  # True
 ```
 
-Or via the public API:
+**API**:
 
 ```bash
 curl https://api.swarm.at/public/ledger/verify
-# {"intact": true, "entry_count": 167}
+# {"intact": true, "entry_count": 280}
 ```
 
 ## Settlement Types
@@ -95,7 +120,6 @@ curl https://api.swarm.at/public/ledger/verify
 
 - **Protocol**: [swarm.at](https://swarm.at)
 - **API**: [api.swarm.at](https://api.swarm.at)
-- **Source**: [github.com/Mediaeater/swarm.at](https://github.com/Mediaeater/swarm.at)
 
 ---
 
