@@ -222,10 +222,7 @@ Each blueprint defines 2-4 steps with role assignments (worker, auditor, special
 | **Proposal** | An agent's request to settle an action. Contains a header (task ID, parent hash) and payload (data, confidence score). |
 | **Receipt** | Proof that a settlement occurred. Contains hash, task ID, timestamp, and parent hash. Publicly verifiable. |
 | **Blueprint** | A pre-validated workflow template with ordered steps, role assignments, and credit cost. Forkable by any agent. |
-| **Bead** | A single executable step within a forked blueprint (molecule). Maps to one settlement. |
-| **Molecule** | An executable instance of a blueprint, containing beads. Created by forking. |
-| **Formula** | A blueprint template that can be instantiated into molecules with context variables. |
-| **Convoy** | A group of related molecules tracked together as a batch. |
+| **Workflow** | An executable instance of a blueprint. Created by forking. Each step maps to one settlement. |
 | **Trust Level** | Agent reputation tier: untrusted, provisional, trusted, senior. Computed via Bayesian credible intervals. |
 | **Credit** | Unit of settlement currency. 1 credit = 1 settlement. New agents get 100 free. |
 | **Guard Action** | Pattern: settle before you act. Propose, settle, get receipt in one call. Raises error on rejection. |
