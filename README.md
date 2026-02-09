@@ -89,6 +89,78 @@ curl https://api.swarm.at/public/trust-summary
 # {"total_agents": 5, "by_trust_level": {"untrusted": 0, "provisional": 0, "trusted": 4, "senior": 1}}
 ```
 
+## Trust Badges
+
+Embeddable SVG badges show an agent's trust level at a glance. No authentication required.
+
+```
+https://api.swarm.at/badge/{agent_id}
+```
+
+Colors: untrusted (red), provisional (yellow), trusted (green), senior (blue).
+
+## MCP Server
+
+11 tools available via the Model Context Protocol:
+
+```bash
+mcp add swarm-at -- python -m swarm_at.mcp
+```
+
+| Tool | Description |
+|---|---|
+| settle_action | Validate an action against institutional rules |
+| check_settlement | Query ledger status for a task or hash |
+| ledger_status | Current chain state (latest hash, entry count, integrity) |
+| guard_action | Settle before acting — propose + settle + receipt in one call |
+| list_blueprints | Browse workflow blueprints by tag |
+| get_blueprint | Full blueprint detail with steps and credit cost |
+| get_credits | Check an agent's credit balance |
+| topup_credits | Add credits to an agent |
+| fork_blueprint | Fork a blueprint into an executable workflow |
+| verify_receipt | Look up a settlement receipt by hash |
+| check_trust | Check if an agent meets a minimum trust threshold |
+
+## Framework Adapters
+
+Seven adapters settle agent outputs with zero hard dependencies on the framework:
+
+| Framework | Adapter | Entry Point |
+|---|---|---|
+| LangGraph | `SwarmNodeWrapper` | Wraps node functions |
+| CrewAI | `SwarmTaskCallback` | Task completion callback |
+| AutoGen | `SwarmReplyCallback` | Agent reply observer |
+| OpenAI Assistants | `SwarmRunHandler` | Run and step settlement |
+| OpenAI Agents SDK | `SwarmAgentHook` | Runner result and tool call settlement |
+| Strands (AWS) | `SwarmStrandsCallback` | Tool and agent completion callbacks |
+| Haystack | `SwarmSettlementComponent` | Pipeline component returning receipts |
+
+Install adapters via optional extras:
+
+```bash
+pip install swarm-at-sdk[langgraph]
+pip install swarm-at-sdk[openai-agents]
+pip install swarm-at-sdk[strands]
+pip install swarm-at-sdk[haystack]
+```
+
+## Blueprint Catalog
+
+31 pre-validated blueprints across 6 categories:
+
+| Category | Count | Examples |
+|---|---|---|
+| Procurement & Supply Chain | 5 | vendor-negotiation, purchase-approval, delivery-confirmation |
+| Software Development | 5 | code-review-pipeline, pr-merge-audit, incident-escalation |
+| Finance & Compliance | 5 | invoice-matching, kyc-verification, financial-close |
+| Content & Knowledge | 5 | research-workflow, fact-checking, translation-verification |
+| Customer Operations | 5 | escalation-routing, refund-approval, sla-compliance |
+| Specialty | 6 | audit-chain, healthcare-referral, insurance-adjudication |
+
+Browse: [api.swarm.at/public/blueprints](https://api.swarm.at/public/blueprints)
+
+Each blueprint defines 2-4 steps with role assignments (worker, auditor, specialist, orchestrator, validator), dependency chains, and credit costs (2.0-8.0 per settlement).
+
 ## Settlement Types
 
 <details>
@@ -141,11 +213,40 @@ curl https://api.swarm.at/public/trust-summary
 
 </details>
 
+## Lexicon
+
+| Term | Definition |
+|---|---|
+| **Settlement** | A verified, hash-chained record of an agent action. One credit = one settlement. |
+| **Ledger** | Append-only JSONL file where settlements are recorded. Each entry's hash chains to the previous. |
+| **Proposal** | An agent's request to settle an action. Contains a header (task ID, parent hash) and payload (data, confidence score). |
+| **Receipt** | Proof that a settlement occurred. Contains hash, task ID, timestamp, and parent hash. Publicly verifiable. |
+| **Blueprint** | A pre-validated workflow template with ordered steps, role assignments, and credit cost. Forkable by any agent. |
+| **Bead** | A single executable step within a forked blueprint (molecule). Maps to one settlement. |
+| **Molecule** | An executable instance of a blueprint, containing beads. Created by forking. |
+| **Formula** | A blueprint template that can be instantiated into molecules with context variables. |
+| **Convoy** | A group of related molecules tracked together as a batch. |
+| **Trust Level** | Agent reputation tier: untrusted, provisional, trusted, senior. Computed via Bayesian credible intervals. |
+| **Credit** | Unit of settlement currency. 1 credit = 1 settlement. New agents get 100 free. |
+| **Guard Action** | Pattern: settle before you act. Propose, settle, get receipt in one call. Raises error on rejection. |
+| **Shadow Audit** | Cross-model verification where a second model independently checks the primary's output. |
+| **Divergence** | When a shadow audit disagrees with the primary. Penalizes the agent's trust score. |
+| **Adapter** | Framework integration that settles agent outputs without hard-importing the framework. Uses duck typing. |
+| **Agent Card** | A2A discovery document at `/.well-known/agent-card.json` describing the protocol's capabilities. |
+| **Tier** | Settlement strictness level: sandbox (log-only), staging (writes, no chain enforcement), production (full). |
+
 ## Links
 
 - **Protocol**: [swarm.at](https://swarm.at)
 - **API**: [api.swarm.at](https://api.swarm.at)
 - **Blueprints**: [api.swarm.at/public/blueprints](https://api.swarm.at/public/blueprints)
+- **Stack**: [swarm.at/stack.html](https://swarm.at/stack.html) — where swarm.at fits alongside MCP, A2A, and ACP
+- **Pricing**: [swarm.at/pricing.html](https://swarm.at/pricing.html) — Free / Pro / Enterprise tiers
+- **Spec**: [swarm.at/SPEC.html](https://swarm.at/SPEC.html) — full technical specification
+- **Dashboard**: [swarm.at/dashboard.html](https://swarm.at/dashboard.html) — live settlement stats
+- **LLMs.txt**: [api.swarm.at/llms.txt](https://api.swarm.at/llms.txt) — LLM-readable protocol summary
+- **Agent Card**: [api.swarm.at/.well-known/agent-card.json](https://api.swarm.at/.well-known/agent-card.json)
+- **PyPI**: [swarm-at-sdk](https://pypi.org/project/swarm-at-sdk/)
 
 ---
 
