@@ -46,7 +46,7 @@ Three ways to verify the chain:
 
 ```bash
 python verify.py
-# OK: 280 entries, chain intact
+# OK: 490 entries, chain intact
 ```
 
 **SDK**:
@@ -61,7 +61,7 @@ print(ledger.verify_chain())  # True
 
 ```bash
 curl https://api.swarm.at/public/ledger/verify
-# {"intact": true, "entry_count": 280}
+# {"intact": true, "entry_count": 490}
 ```
 
 ## Settlement Receipts
@@ -164,7 +164,7 @@ Each blueprint defines 2-4 steps with role assignments (worker, auditor, special
 ## Settlement Types
 
 <details>
-<summary>35 types covering knowledge verification and agent behaviors</summary>
+<summary>42 types covering knowledge verification, agent behaviors, and protocol operations</summary>
 
 ### Knowledge Verification
 
@@ -210,6 +210,18 @@ Each blueprint defines 2-4 steps with role assignments (worker, auditor, special
 | api-integration | External API calls with endpoint tracking |
 | deployment | Build, deploy, and release operations |
 | conversation-turn | Conversational exchange settlement |
+
+### Protocol Operations
+
+| Type | Description |
+|---|---|
+| blueprint-fork | Blueprint forked into executable workflow |
+| guard-action | Pre-action settlement check (settle before you act) |
+| trust-check | Agent trust level verification against threshold |
+| credit-topup | Credits added to agent balance |
+| receipt-verify | Settlement receipt lookup by hash |
+| badge-request | Trust badge SVG generation |
+| adapter-settlement | Framework adapter settling agent output |
 
 </details>
 
