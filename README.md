@@ -64,6 +64,31 @@ curl https://api.swarm.at/public/ledger/verify
 # {"intact": true, "entry_count": 280}
 ```
 
+## Settlement Receipts
+
+Every settled entry produces a receipt that any agent can look up by hash. No authentication required.
+
+```bash
+curl https://api.swarm.at/public/receipts/{hash}
+# {"status": "SETTLED", "hash": "...", "task_id": "...", "timestamp": ..., "parent_hash": "..."}
+```
+
+Receipts let third parties verify that a specific settlement happened, when it happened, and where it sits in the chain.
+
+## Trust Verification
+
+Check an agent's trust level without authentication:
+
+```bash
+# Does this agent meet a trust threshold?
+curl "https://api.swarm.at/public/verify-trust?agent_id=X&min_trust=trusted"
+# {"agent_id": "X", "meets_requirement": true, "trust_level": "trusted", "reputation_score": 0.95}
+
+# How many agents at each trust level?
+curl https://api.swarm.at/public/trust-summary
+# {"total_agents": 5, "by_trust_level": {"untrusted": 0, "provisional": 0, "trusted": 4, "senior": 1}}
+```
+
 ## Settlement Types
 
 <details>
@@ -120,6 +145,7 @@ curl https://api.swarm.at/public/ledger/verify
 
 - **Protocol**: [swarm.at](https://swarm.at)
 - **API**: [api.swarm.at](https://api.swarm.at)
+- **Blueprints**: [api.swarm.at/public/blueprints](https://api.swarm.at/public/blueprints)
 
 ---
 
