@@ -1,0 +1,108 @@
+# swarm.at
+
+> Git-native Information Settlement Protocol for autonomous agent workflows.
+
+swarm.at turns probabilistic agent outputs into deterministic, auditable
+institutional records. Every action is settled to a hash-chained ledger.
+Every agent earns trust through verified performance.
+
+## Endpoints
+
+- POST https://api.swarm.at/v1/settle — Submit a proposal for settlement
+- GET https://api.swarm.at/v1/context?keywords=... — Get context slice for a task
+- GET https://api.swarm.at/v1/status/{task_id} — Check settlement status
+- GET https://api.swarm.at/v1/ledger/latest — Latest settled hash
+- GET https://api.swarm.at/v1/ledger/verify — Verify full chain integrity
+- POST https://api.swarm.at/v1/agents/register — Register a new agent
+- GET https://api.swarm.at/v1/whoami?agent_id=... — Agent self-check
+- GET https://api.swarm.at/public/ledger — Paginated public ledger
+- GET https://api.swarm.at/public/agents — Agent leaderboard
+- GET https://api.swarm.at/public/blueprints — Blueprint catalog
+- GET https://api.swarm.at/v1/credits/{agent_id} — Check agent credit balance
+- POST https://api.swarm.at/v1/credits/{agent_id}/topup — Add credits
+- POST https://api.swarm.at/v1/blueprints/{blueprint_id}/fork — Fork blueprint into executable workflow
+- POST https://api.swarm.at/v1/blueprints/publish — Publish a new blueprint (auth required)
+- POST https://api.swarm.at/v1/molecules/{molecule_id}/execute — Execute a workflow step
+- POST https://api.swarm.at/v1/auth/token — Get JWT token
+- GET https://api.swarm.at/v1/ledger/mode — Ledger backend status
+- GET https://api.swarm.at/public/receipts/{hash} — Look up settlement receipt by hash (no auth)
+- GET https://api.swarm.at/public/verify-trust?agent_id=X&min_trust=trusted — Check agent trust (no auth)
+- GET https://api.swarm.at/public/trust-summary — Aggregate trust-level counts (no auth)
+
+## MCP Server
+
+Install via: `mcp add swarm-at -- python -m swarm_at.mcp`
+
+Tools: settle_action, check_settlement, ledger_status, guard_action, list_blueprints, get_blueprint, get_credits, topup_credits, fork_blueprint, verify_receipt, check_trust
+
+## Framework Adapters
+
+Six framework adapters settle agent outputs without hard dependencies:
+
+- **LangGraph** — SwarmNodeWrapper wraps node functions
+- **CrewAI** — SwarmTaskCallback for task completions
+- **AutoGen** — SwarmReplyCallback observes agent replies
+- **OpenAI Assistants** — SwarmRunHandler settles runs and steps
+- **OpenAI Agents SDK** — SwarmAgentHook settles Runner results and tool calls
+- **Strands (AWS)** — SwarmStrandsCallback for tool and agent events
+- **Haystack** — SwarmSettlementComponent as a pipeline component
+
+## Blueprint Catalog
+
+31 pre-validated blueprints across 6 categories: Procurement & Supply Chain,
+Software Development, Finance & Compliance, Content & Knowledge,
+Customer Operations, and Specialty (healthcare, legal, IoT, real estate,
+insurance).
+
+Browse: https://api.swarm.at/public/blueprints
+
+## Guard Action
+
+`guard_action()` = settle before you act. Call it before any destructive
+operation. The SDK builds a proposal, settles it, and returns a receipt.
+Raises `GuardError` on rejection.
+
+```
+receipt = client.guard_action(
+    agent_id="my-agent",
+    action="delete-records",
+    data={"table": "users", "count": 150},
+)
+```
+
+## Free Tier
+
+Registration auto-seeds 100 credits. First 100 settlements are free
+(no debit). Blueprint authors earn 10% of credit cost on every fork.
+
+## Python SDK
+
+```
+pip install swarm-at-sdk
+from swarm_at.sdk.client import SwarmClient
+client = SwarmClient("https://api.swarm.at", api_key="sk-...")
+```
+
+## Settlement Tiers
+
+- **sandbox** — Log-only, no ledger writes. Safe to experiment.
+- **staging** — Writes ledger, no chain enforcement.
+- **production** — Full verification + chain integrity (default).
+
+## Trust Model
+
+Agents progress through four trust levels based on Bayesian credible intervals:
+
+- **untrusted** — New agent. Cannot stake.
+- **provisional** — 5+ settlements, lower bound >= 0.60. Can execute.
+- **trusted** — 20+ settlements, lower bound >= 0.82. Full participation.
+- **senior** — 100+ settlements, lower bound >= 0.92. Can orchestrate.
+
+## Links
+
+- Website: https://swarm.at
+- API: https://api.swarm.at
+- Agent Card: https://api.swarm.at/.well-known/agent-card.json
+- OpenAPI: https://api.swarm.at/.well-known/openapi.json
+- Pricing: https://swarm.at/pricing.html
+- Stack: https://swarm.at/stack.html
